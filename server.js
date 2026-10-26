@@ -124,8 +124,24 @@ app.post("/api/login", asyncRoute(async(req,res)=>{
   const passwordOK=typeof password==="string" && await bcrypt.compare(password, await bcrypt.hash(process.env.ADMIN_PASSWORD, 10)).catch(()=>false);
   // Constant-time-ish password comparison is handled by bcrypt; configured password is the only admin credential.
   if(!emailOK || !passwordOK) return res.status(401).json({error:"Incorrect email or password."});
-  req.session.authenticated=true;req.session.email=process.env.ADMIN_EMAIL;
-  res.json({ok:true,email:process.env.ADMIN_EMAIL});
+  
+req.session.authenticated = true;
+req.session.email = process.env.ADMIN_EMAIL;
+
+req.session.save((err) => {
+  if (err) {
+    console.error("Session save failed:", err);
+    return res.status(500).json({
+      error: "Could not save login session."
+    });
+  }
+
+  return res.json({
+    ok: true,
+    email: process.env.ADMIN_EMAIL
+  });
+});
+
 }));
 app.get("/api/session",(req,res)=>req.session.authenticated?res.json({authenticated:true,email:req.session.email}):res.json({authenticated:false}));
 app.post("/api/logout",(req,res)=>req.session.destroy(err=>{if(err)return res.status(500).json({error:"Could not sign out."});res.clearCookie("business_manager_session");res.json({ok:true});}));
