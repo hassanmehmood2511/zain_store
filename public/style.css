@@ -654,3 +654,131 @@ footer {
         grid-template-columns: 1fr
     }
 }
+
+/* Shared interaction timing keeps feedback consistent without affecting layout. */
+:root {
+    --motion-fast: 160ms;
+    --motion-standard: 220ms;
+    --motion-ease: cubic-bezier(.2, .7, .2, 1)
+}
+
+button,
+a,
+.nav-item,
+.stat-card,
+.panel,
+input,
+select,
+textarea,
+tbody tr,
+.toast {
+    transition:
+        color var(--motion-standard) var(--motion-ease),
+        background-color var(--motion-standard) var(--motion-ease),
+        border-color var(--motion-standard) var(--motion-ease),
+        box-shadow var(--motion-standard) var(--motion-ease),
+        opacity var(--motion-standard) var(--motion-ease),
+        filter var(--motion-standard) var(--motion-ease),
+        transform var(--motion-standard) var(--motion-ease)
+}
+
+button:not(:disabled):active,
+a:active {
+    transform: translateY(1px)
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid #58a77b;
+    outline-offset: 2px
+}
+
+.nav-item:hover {
+    transform: translateX(2px)
+}
+
+.primary:hover,
+.secondary:hover,
+.danger:hover,
+.action-btn:hover {
+    filter: brightness(.97)
+}
+
+.stat-card:hover,
+.panel:hover,
+.login-card:hover {
+    box-shadow: 0 12px 30px rgba(24, 53, 38, .08);
+    transform: translateY(-2px)
+}
+
+.form-grid input:hover,
+.form-grid select:hover,
+.form-grid textarea:hover,
+.notes-label textarea:hover,
+.search:hover,
+.login-card input:hover,
+.invoice-table select:hover,
+.invoice-table input:hover {
+    border-color: #b7cbbd
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus,
+.notes-label textarea:focus,
+.search:focus,
+.login-card input:focus,
+.invoice-table select:focus,
+.invoice-table input:focus {
+    border-color: #58a77b;
+    box-shadow: 0 0 0 3px #eaf5ee
+}
+
+tbody tr {
+    background-color: transparent
+}
+
+tbody tr:hover {
+    background-color: #f7faf8
+}
+
+.page:not(.hidden) {
+    animation: page-enter 280ms var(--motion-ease) both
+}
+
+.login-card {
+    animation: page-enter 360ms var(--motion-ease) both
+}
+
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+.toast {
+    transition:
+        opacity var(--motion-standard) var(--motion-ease),
+        transform var(--motion-standard) var(--motion-ease),
+        background-color var(--motion-standard) var(--motion-ease)
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important
+    }
+}
