@@ -23,6 +23,17 @@ if (!process.env.SESSION_SECRET || !process.env.ADMIN_EMAIL || !process.env.ADMI
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: false }));
+app.use(async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(MONGODB_URI);
+    }
+    next();
+  } catch (err) {
+    console.error("MongoDB connection failed:", err.message);
+    next(err);
+  }
+});
 app.use(session({
   name: "business_manager_session",
   secret: process.env.SESSION_SECRET,
@@ -171,4 +182,4 @@ app.use(express.static(path.join(__dirname,"public")));
 app.get("*",(req,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
 app.use((err,req,res,next)=>{console.error(err);if(res.headersSent)return next(err);res.status(err.status||500).json({error:err.status?err.message:"Server error. Check the server terminal for details."});});
 
-mongoose.connect(MONGODB_URI).then(()=>{console.log("Connected to MongoDB");app.listen(PORT,()=>console.log(`Business Manager running at http://localhost:${PORT}`));}).catch(err=>{console.error("MongoDB connection failed:",err.message);process.exit(1);});
+module.exports = app;
