@@ -1,4 +1,3 @@
-app.set("trust proxy", 1);
 const dns = require("node:dns");
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 require("dotenv").config();
@@ -11,6 +10,7 @@ const bcrypt = require("bcryptjs");
 const helmet = require("helmet");
 
 const app = express();
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
